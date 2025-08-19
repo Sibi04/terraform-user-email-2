@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Email Lookup</title>
+    <!-- Tailwind CSS CDN for simple styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to ensure Inter font and responsive behavior */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Light gray background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+            padding: 20px; /* Padding for smaller screens */
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 1rem; /* More rounded corners */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
+            width: 100%;
+            max-width: 480px; /* Increased max-width */
+            text-align: center;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #1a202c; /* Darker text for heading */
+            margin-bottom: 1.5rem; /* More space below heading */
+            font-size: 2rem; /* Larger heading */
+            font-weight: 700; /* Bold font */
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600; /* Semi-bold */
+            color: #4a5568; /* Grayish text */
+            text-align: left;
+            font-size: 1rem;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem 1rem; /* Comfortable padding */
+            margin-bottom: 1.5rem;
+            border: 1px solid #cbd5e0; /* Light border */
+            border-radius: 0.5rem; /* Rounded input field */
+            font-size: 1rem;
+            color: #2d3748; /* Darker text in input */
+            outline: none; /* Remove default outline */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            box-sizing: border-box; /* Include padding in width */
+        }
+        input[type="text"]:focus {
+            border-color: #4299e1; /* Blue border on focus */
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5); /* Blue shadow on focus */
+        }
+        button {
+            background-color: #4299e1; /* Blue button */
+            color: white;
+            padding: 0.75rem 2rem; /* Generous padding */
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.125rem; /* Larger font for button */
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+        button:hover {
+            background-color: #3182ce; /* Darker blue on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        button:active {
+            transform: translateY(0); /* Press effect */
+            box-shadow: none;
+        }
+        .link-container { 
+            margin-top: 1.5rem; 
+        } 
+        .link-container a { 
+             color: #4299e1; 
+             text-decoration: none;
+             font-weight: 600; 
+             transition: color 0.2s ease; 
+        } 
+        .link-container a:hover { color: #3182ce;
+             text-decoration: underline; 
+        }
+        #result {
+            margin-top: 2rem; /* More space above result */
+            padding: 1rem;
+            background-color: #e2e8f0; /* Light gray background for result */
+            border-radius: 0.5rem;
+            text-align: center;
+            min-height: 3rem; /* Ensure space for message */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2d3748; /* Dark text */
+            font-weight: 600;
+            word-wrap: break-word; /* Ensure long emails wrap */
+        }
+        #result.error {
+            background-color: #fed7d7; /* Light red for error */
+            color: #c53030; /* Dark red text for error */
+            border: 1px solid #fc8181; /* Red border for error */
+        }
+        #loading {
+            display: none; /* Hidden by default */
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: #718096; /* Gray text for loading */
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Email Lookup</h1>
+        <div>
+            <label for="usernameInput">Enter Username:</label>
+            <input type="text" id="usernameInput" placeholder="e.g., john.doe">
+        </div>
+        <button onclick="getUserEmail()">Get Email</button>
+        <div id="loading">Loading...</div>
+        <div id="result"></div>
+          <div class="link-container"> 
+              <a href="add_user.html">Add New User</a> 
+         </div>   
+    </div>
+
+    <script>
+        // IMPORTANT: This API_GATEWAY_URL is based on your previous input.
+        // If your API Gateway URL changes, you MUST update this line.
+        const API_GATEWAY_URL = 'https://ojbei5tvn5.execute-api.us-east-1.amazonaws.com/getMail/users/';
+
+        /**
+         * Asynchronously fetches the user's email from the API Gateway.
+         * Displays the result or an error message.
+         */
+        async function getUserEmail() {
+            const usernameInput = document.getElementById('usernameInput');
+            const username = usernameInput.value.trim();
+            const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
+
+            // Clear previous results and error styles
+            resultDiv.textContent = '';
+            resultDiv.classList.remove('error');
+            loadingDiv.style.display = 'block'; // Show loading indicator
+
+            // Basic client-side validation
+            if (!username) {
+                resultDiv.classList.add('error');
+                resultDiv.textContent = 'Please enter a username.';
+                loadingDiv.style.display = 'none'; // Hide loading indicator
+                return;
+            }
+
+            try {
+                // Construct the API URL with the username as a query parameter
+                // encodeURIComponent is crucial for handling special characters in usernames
+                const response = await fetch(`${API_GATEWAY_URL}?userName=${encodeURIComponent(username)}`);
+
+                // Check if the HTTP response was successful (status code 200-299)
+                if (!response.ok) {
+                    // Attempt to parse error message from the response body
+                    const errorData = await response.json();
+                    // Throw an error with a message from the API or a generic one
+                    throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+                }
+
+                // Parse the JSON response
+                const data = await response.json();
+
+                // Display the email ID
+                resultDiv.textContent = `Email for ${data.userName}: ${data.emailId}`;
+            } catch (error) {
+                // Catch and display any errors during the fetch operation
+                console.error('Error fetching email:', error);
+                resultDiv.classList.add('error'); // Apply error styling
+                resultDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                // Always hide the loading indicator, regardless of success or failure
+                loadingDiv.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
+
