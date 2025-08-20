@@ -68,13 +68,13 @@ variable "container_port" {
 variable "task_execution_role" {
   description = "The name of the ECS task execution role"
   type        = string
-  default     = "arn:aws:iam::227224898353:role/dev-ecs-task-role"
+  default     = "arn:aws:iam::808581944931:role/ecsTaskExecutionRole"
 }
 
 variable "lambda_rds_role"{ 
   description = "The name of the lambda role for rds-db"
   type        = string
-  default= "arn:aws:iam::227224898353:role/dev-lambda-2-role"
+  default= "arn:aws:iam::808581944931:role/lambda_rds_role"
 }
 
 variable "s3_bucket_name" {
@@ -86,5 +86,5 @@ variable "s3_bucket_name" {
 variable "ec2_ssm_role"{
   description = "the role for ec2 ssm manager"
   type= string
-  default= "arn:aws:iam::227224898353:role/dev-ec2-ssm-role"
+  default= "arn:aws:iam::808581944931:role/EC2-SSM-Role"
 }
