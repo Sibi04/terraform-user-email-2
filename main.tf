@@ -1,6 +1,6 @@
 provider "aws" {
   region = var.aws_region
-  profile ="trimble-dev-profile"
+  profile ="personal"
 }
 
 resource "aws_vpc" "main_vpc" {
