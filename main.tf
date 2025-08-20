@@ -479,7 +479,7 @@ resource "aws_lb_listener" "http_listener" {
 
 
 resource "aws_instance" "private_instance" {
-  ami           = "ami-0de716d6197524dd9" # us-east-1
+  ami           = "ami-0945610b37068d87a" # us-west-1
   instance_type = "t2.micro"
   subnet_id = aws_subnet.private_subnet_b.id
   vpc_security_group_ids = [aws_security_group.public_instance_sg.id]
