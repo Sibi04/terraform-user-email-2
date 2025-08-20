@@ -1,6 +1,6 @@
 provider "aws" {
   region = var.aws_region
-  profile ="personal"
+  #profile ="personal"
 }
 
 resource "aws_vpc" "main_vpc" {
