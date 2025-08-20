@@ -80,7 +80,7 @@ variable "lambda_rds_role"{
 variable "s3_bucket_name" {
   description = "The name of the S3 bucket for the website"
   type        = string
-  default     = "website-index-1-227224898353"
+  default     = "website-index-7-808581944931"
 }
 
 variable "ec2_ssm_role"{
