@@ -45,7 +45,7 @@ resource "aws_subnet" "private_subnet" {
 resource "aws_subnet" "private_subnet_db_2" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = var.private_subnet_db_2_cidr_block
-  availability_zone = "${var.aws_region}a"
+  availability_zone = "${var.aws_region}c"
 
   tags = {
     Name = "my-db-2-private-subnet"
@@ -64,7 +64,7 @@ resource "aws_subnet" "private_subnet_b" {
 resource "aws_subnet" "private_subnet_app_2" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = var.private_subnet_app_2_b_cidr_block
-  availability_zone = "${var.aws_region}c"
+  availability_zone = "${var.aws_region}a"
 
   tags = {
     Name = "my-app-2-private-subnet"
