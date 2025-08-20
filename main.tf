@@ -25,7 +25,7 @@ resource "aws_subnet" "public_subnet" {
 resource "aws_subnet" "alb_subnet" {
   vpc_id                  = aws_vpc.main_vpc.id
   cidr_block              = var.alb_subnet_cidr_block
-  availability_zone       = "${var.aws_region}b" 
+  availability_zone       = "${var.aws_region}c" 
   map_public_ip_on_launch = true 
   tags = {
     Name = "my-terraform-ALB-subnet"
@@ -35,7 +35,7 @@ resource "aws_subnet" "alb_subnet" {
 resource "aws_subnet" "private_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = var.private_subnet_cidr_block
-  availability_zone = "${var.aws_region}b"
+  availability_zone = "${var.aws_region}a"
 
   tags = {
     Name = "my-db-1-private-subnet"
@@ -55,7 +55,7 @@ resource "aws_subnet" "private_subnet_db_2" {
 resource "aws_subnet" "private_subnet_b" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = var.private_subnet_b_cidr_block
-  availability_zone = "${var.aws_region}b"
+  availability_zone = "${var.aws_region}c"
 
   tags = {
     Name = "my-app-private-subnet"
